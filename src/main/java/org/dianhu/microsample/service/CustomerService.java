@@ -1,6 +1,6 @@
 package org.dianhu.microsample.service;
 
-import org.dianhu.microframework.dao.DatabaseHelper;
+import org.dianhu.microframework.helper.DatabaseHelper;
 import org.dianhu.microsample.model.Customer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
