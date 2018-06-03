@@ -1,5 +1,7 @@
 package org.dianhu.microframework.dao;
 
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.dianhu.microframework.util.PropsUtil;
 import org.dianhu.microsample.service.CustomerService;
 import org.slf4j.Logger;
@@ -8,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -17,6 +21,7 @@ import java.util.Properties;
  */
 public class DatabaseHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseHelper.class);
+    private static final QueryRunner QUERY_RUNNER = new QueryRunner();
 
     private static final String DRIVER;
     private static final String URL;
@@ -55,5 +60,17 @@ public class DatabaseHelper {
                 LOGGER.error("close connection failure",e);
             }
         }
+    }
+
+    public static <T> List<T> queryEntityList(Class<T> entityClass, Connection conn, String sql, Object... params){
+        List<T> entityList = new ArrayList<T>();
+        try{
+            entityList = QUERY_RUNNER.query(conn,sql,new BeanListHandler<T>(entityClass),params);
+        } catch (SQLException e) {
+            LOGGER.error("query entity list failure",e);
+        } finally {
+            closeConnection(conn);
+        }
+        return entityList;
     }
 }
